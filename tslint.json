@@ -1,6 +1,8 @@
 {
   "extends": ["tslint:latest", "tslint-config-prettier", "tslint-immutable"],
   "rules": {
+    "no-console": false,
+
     "interface-name": [true, "never-prefix"],
     // TODO: allow devDependencies only in **/*.spec.ts files:
     // waiting on https://github.com/palantir/tslint/pull/3708
@@ -25,10 +27,10 @@
     "no-class": true,
     "no-mixed-interface": true,
     "no-expression-statement": [
-      true,
+      false,
       { "ignore-prefix": ["console.", "process.exit"] }
     ],
-    "no-if-statement": true
+    "no-if-statement": false
     /* end tslint-immutable rules */
   }
 }
