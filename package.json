@@ -1,7 +1,7 @@
 {
   "name": "copyright-header",
-  "version": "1.0.0",
-  "description": "Add and update copyright header",
+  "version": "0.0.1",
+  "description": "Add and update copyright headers automatically",
   "main": "build/main/index.js",
   "typings": "build/main/index.d.ts",
   "module": "build/module/index.js",
