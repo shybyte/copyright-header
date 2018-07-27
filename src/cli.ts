@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import child_process from 'child_process';
-import fs from 'fs';
-import path from 'path';
+import * as child_process from 'child_process';
+import * as fs from 'fs';
+import * as path from 'path';
 
 const COPYRIGHT_OWNER = 'Copyright Owner';
 const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = ['ts', 'js'];
