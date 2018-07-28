@@ -21,6 +21,7 @@ test.afterEach(() => {
 test.serial('ensureUpdatedCopyrightHeader', t => {
   ensureUpdatedCopyrightHeader({
     include: [TEST_DATA_FOLDER],
+    exclude: [],
     copyrightHolder: 'CopyrightHolder'
   });
 

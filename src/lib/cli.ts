@@ -8,7 +8,8 @@ function parseList(val: string | null): ReadonlyArray<string> {
 export function runCli(argv: string[]): void {
   commander
     .version('0.0.1')
-    .option('-i, --include [paths]', 'regexp file filter', parseList, [])
+    .option('-i, --include [paths]', 'include regexp file filter', parseList, [])
+    .option('-e, --exclude [paths]', 'exclude regexp file filter', parseList, [])
     .option('--copyrightHolder <name>', 'Copyright Holder');
 
   const options: Options = commander.parse(argv) as any;
@@ -20,6 +21,7 @@ export function runCli(argv: string[]): void {
 
   ensureUpdatedCopyrightHeader({
     include: options.include,
+    exclude: options.exclude,
     copyrightHolder: options.copyrightHolder
   });
 }

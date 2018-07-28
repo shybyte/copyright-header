@@ -8,7 +8,7 @@ const collectFilesTest: Macro = (
   include: ReadonlyArray<string>,
   expected: ReadonlyArray<string>
 ) => {
-  t.deepEqual(collectFiles(include), expected);
+  t.deepEqual(collectFiles({ include, exclude: [] }), expected);
 };
 
 collectFilesTest.title = (
@@ -23,10 +23,18 @@ const ALL_TEST_DATA_FILES: ReadonlyArray<string> = [
   'test-data/file-javascript.js',
   'test-data/file-typescript.ts'
 ];
+
 test('matching files', collectFilesTest, ['test-data'], ALL_TEST_DATA_FILES);
 
 test('no matching files', collectFilesTest, ['test-data-not-exist'], []);
 
 test('collectFiles - no include filter', t => {
-  t.true(collectFiles([]).length > 10);
+  t.true(collectFiles({ include: [], exclude: [] }).length > 10);
+});
+
+test('collectFiles - exclude filter over include filter', t => {
+  t.deepEqual(
+    collectFiles({ include: ['test-data'], exclude: ['.*\\.ts$'] }),
+    ALL_TEST_DATA_FILES.filter(f => !f.endsWith('.ts'))
+  );
 });
