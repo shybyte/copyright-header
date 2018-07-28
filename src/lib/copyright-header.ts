@@ -9,7 +9,7 @@ const COPYRIGHT_TEMPLATE = `/* Copyright (c) $from$to $copyrightHolder */`;
 
 const FIND_YEARS_REGEXP = /\b20\d{2}\b/g;
 
-interface Options {
+export interface Options {
   readonly include: ReadonlyArray<string>;
   readonly copyrightHolder: string;
 }

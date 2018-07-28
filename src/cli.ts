@@ -1,8 +1,5 @@
 #!/usr/bin/env node
 
-import { ensureUpdatedCopyrightHeader } from './lib/copyright-header';
+import { runCli } from './lib/cli';
 
-ensureUpdatedCopyrightHeader({
-  include: ['test-data'],
-  copyrightHolder: 'CopyrightHolder'
-});
+runCli(process.argv);

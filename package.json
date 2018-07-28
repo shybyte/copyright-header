@@ -36,7 +36,7 @@
     "clean": "trash build test",
     "all": "run-s reset test cov:check doc:html",
     "prepare-release": "run-s all version doc:publish",
-    "start": "node build/main/cli.js",
+    "start": "node build/main/cli.js --include \"test-data\",\"test-data2\" --copyrightHolder \"CopyrightHolder\"",
     "revertTestData": "git checkout HEAD -- test-data"
   },
   "scripts-info": {
@@ -55,7 +55,9 @@
   "engines": {
     "node": ">=8.9"
   },
-  "dependencies": {},
+  "dependencies": {
+    "commander": "^2.16.0"
+  },
   "devDependencies": {
     "ava": "^1.0.0-beta.5.1",
     "codecov": "^3.0.2",
