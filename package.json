@@ -36,7 +36,8 @@
     "clean": "trash build test",
     "all": "run-s reset test cov:check doc:html",
     "prepare-release": "run-s all version doc:publish",
-    "start": "node build/main/cli.js"
+    "start": "node build/main/cli.js",
+    "revertTestData": "git checkout HEAD -- test-data"
   },
   "scripts-info": {
     "info": "Display information about the package scripts",
@@ -89,7 +90,8 @@
     }
   },
   "prettier": {
-    "singleQuote": true
+    "singleQuote": true,
+    "printWidth": 100
   },
   "nyc": {
     "exclude": [
