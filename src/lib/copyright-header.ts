@@ -14,7 +14,7 @@ export interface FileFilter {
   readonly exclude: ReadonlyArray<string>;
 }
 
-export interface Options extends FileFilter{
+export interface Options extends FileFilter {
   readonly copyrightHolder: string;
 }
 
