@@ -7,6 +7,14 @@ node_js:
 cache:
   directories:
   - "$HOME/.npm"
+env:
+  global:
+    - CC_TEST_REPORTER_ID=2fe01441c2c5c60b0f04dc1aa630f79289571f07e056b4a9966b7a50b5746ff7
+before_script:
+  - curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter
+  - chmod +x ./cc-test-reporter
+  - ./cc-test-reporter before-build
 after_success:
   - npx nyc report --reporter=lcov | npx codecov
   - npm run cov:check
+  - ./cc-test-reporter after-build --exit-code $TRAVIS_TEST_RESULT
