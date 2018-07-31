@@ -38,7 +38,7 @@
     "reset": "git clean -dfx && git reset --hard && npm i",
     "clean": "trash build test",
     "all": "run-s reset test cov:check doc:html",
-    "prepare-release": "run-s all version doc:publish",
+    "prepare-release": "run-s all version",
     "start": "node build/main/cli.js --include \"test-data\",\"test-data2\" --copyrightHolder \"CopyrightHolder\"",
     "revertTestData": "git checkout HEAD -- test-data"
   },
