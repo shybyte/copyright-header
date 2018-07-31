@@ -36,13 +36,13 @@ test.serial('ensureUpdatedCopyrightHeader', t => {
   assertFileContent(
     t,
     'file-javascript-with-header-start-year.js',
-    '/* Copyright (c) 2015 CopyrightHolder */\n\n'  + "console.log('Test');"
+    '/* Copyright (c) 2015 CopyrightHolder */\n\n' + "console.log('Test');"
   );
 
   assertFileContent(
     t,
     'file-javascript-with-header-start-year-to-year.js',
-    '/* Copyright (c) 2015-2017 CopyrightHolder */\n\n' + 'console.log(\'Test\');'
+    '/* Copyright (c) 2015-2017 CopyrightHolder */\n\n' + "console.log('Test');"
   );
 });
 
