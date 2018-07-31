@@ -1,6 +1,6 @@
 {
   "name": "copyright-header",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Add and update copyright headers automatically",
   "bin": {
     "copyright-header": "build/main/cli.js"
