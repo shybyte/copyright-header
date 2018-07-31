@@ -1,3 +1,5 @@
+/* Copyright (c) 2018 Marco Stahl */
+
 import { ExecutionContext, test } from 'ava';
 import * as child_process from 'child_process';
 import * as fs from 'fs';

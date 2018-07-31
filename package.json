@@ -39,7 +39,8 @@
     "clean": "trash build test",
     "all": "run-s reset test cov:check doc:html",
     "prepare-release": "run-s all version",
-    "start": "node build/main/cli.js --include \"test-data\",\"test-data2\" --copyrightHolder \"CopyrightHolder\"",
+    "startOnTestData": "node build/main/cli.js --include \"test-data\" --copyrightHolder \"CopyrightHolder\"",
+    "startOnSrc": "node build/main/cli.js --copyrightHolder \"Marco Stahl\" --include src --exclude \"src/cli.ts\"",
     "revertTestData": "git checkout HEAD -- test-data"
   },
   "scripts-info": {

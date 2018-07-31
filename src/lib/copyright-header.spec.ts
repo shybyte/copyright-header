@@ -1,3 +1,5 @@
+/* Copyright (c) 2018 Marco Stahl */
+
 // tslint:disable:no-expression-statement no-object-mutation
 
 import { Macro, test } from 'ava';

@@ -1,3 +1,5 @@
+/* Copyright (c) 2018 Marco Stahl */
+
 export function renderSimpleTemplate(
   template: string,
   vars: { readonly [key: string]: string }
