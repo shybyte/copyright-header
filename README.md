@@ -1,5 +1,7 @@
 # Copyright-Header 
 
+
+[![npm](https://img.shields.io/npm/v/npm.svg)](https://www.npmjs.com/package/copyright-header)
 [![Build Status](https://travis-ci.org/shybyte/copyright-header.svg?branch=master)](https://travis-ci.org/shybyte/copyright-header)
 [![Maintainability](https://api.codeclimate.com/v1/badges/86720e1fb8a232106f13/maintainability)](https://codeclimate.com/github/shybyte/copyright-header/maintainability)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/86720e1fb8a232106f13/test_coverage)](https://codeclimate.com/github/shybyte/copyright-header/test_coverage)
@@ -7,6 +9,21 @@
 [![dependencies Status](https://david-dm.org/shybyte/copyright-header/status.svg)](https://david-dm.org/shybyte/copyright-header)
 
 Add and update copyright headers automatically
+
+## Installation
+
+Global:
+   
+    npm i -g copyright-header
+    
+As local devDependency:
+   
+    npm i -D copyright-header
+
+   
+## Usage Examples (assuming global installation)
+
+    copyright-header --copyrightHolder "Darth Fader" --include "src" --exclude "src/cli.ts"
 
 ## License
 
