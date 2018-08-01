@@ -1,10 +1,11 @@
-/* Copyright (c) 2018 Marco Stahl */
+/* Copyright (c) 2018 CopyrightHolder */
 
 import { ExecutionContext, test } from 'ava';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
-import { ensureUpdatedCopyrightHeader } from './copyright-header';
+import { createSandbox, SinonSandbox, SinonStub } from 'sinon';
+import { runCli } from './cli';
 
 const TEST_DATA_FOLDER = 'test-data';
 
@@ -12,20 +13,31 @@ function revertTestDataFolder(): void {
   child_process.execSync('npm run revertTestData');
 }
 
-test.beforeEach(() => {
+let sinonSandbox: SinonSandbox;
+let consoleLogStub: SinonStub;
+let consoleErrorStub: SinonStub;
+
+test.serial.beforeEach(() => {
   revertTestDataFolder();
+  sinonSandbox = createSandbox();
+  consoleLogStub = sinonSandbox.stub(console, 'log');
+  consoleErrorStub = sinonSandbox.stub(console, 'error');
 });
 
-test.afterEach(() => {
+test.serial.afterEach(() => {
   revertTestDataFolder();
+  sinonSandbox.restore();
 });
 
 test.serial('ensureUpdatedCopyrightHeader', t => {
-  ensureUpdatedCopyrightHeader({
-    include: [TEST_DATA_FOLDER],
-    exclude: [],
-    copyrightHolder: 'CopyrightHolder'
-  });
+  runCli([
+    'node',
+    'script.js',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--copyrightHolder',
+    'CopyrightHolder'
+  ]);
 
   assertFileContent(
     t,
@@ -44,6 +56,14 @@ test.serial('ensureUpdatedCopyrightHeader', t => {
     'file-javascript-with-header-start-year-to-year.js',
     '/* Copyright (c) 2015-2017 CopyrightHolder */\n\n' + "console.log('Test');"
   );
+});
+
+test.serial('--copyrightHolder is required', t => {
+  runCli(['node', 'script.js', '--include', TEST_DATA_FOLDER]);
+
+  t.is(consoleErrorStub.callCount, 1);
+  t.deepEqual(consoleErrorStub.getCall(0).args, ['Please specify --copyrightHolder']);
+  t.is(consoleLogStub.callCount, 0);
 });
 
 function assertFileContent(t: ExecutionContext<any>, file: string, content: string): void {

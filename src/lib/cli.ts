@@ -1,13 +1,14 @@
 /* Copyright (c) 2018 Marco Stahl */
 
-import commander from 'commander';
+import { Command } from 'commander';
 import { ensureUpdatedCopyrightHeader, Options } from './copyright-header';
 
-function parseList(val: string | null): ReadonlyArray<string> {
-  return val ? val.split(',') : [];
+function parseList(val: string): ReadonlyArray<string> {
+  return val.split(',');
 }
 
 export function runCli(argv: string[]): void {
+  const commander = new Command();
   commander
     .version('0.0.1')
     .option('-i, --include [paths]', 'include regexp file filter', parseList, [])
