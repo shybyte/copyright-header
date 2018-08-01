@@ -20,6 +20,7 @@ collectFilesTest.title = (
 ) => `collectFiles - ${providedTitle}: ${include} => ${expected}`;
 
 const ALL_TEST_DATA_FILES: ReadonlyArray<string> = [
+  'test-data/file-javascript-with-header-start-year-to-present.js',
   'test-data/file-javascript-with-header-start-year-to-year.js',
   'test-data/file-javascript-with-header-start-year.js',
   'test-data/file-javascript.js',

@@ -17,14 +17,12 @@ let sinonSandbox: SinonSandbox;
 let consoleLogStub: SinonStub;
 let consoleErrorStub: SinonStub;
 
-test.serial.beforeEach(() => {
+test.beforeEach(() => {
   revertTestDataFolder();
   sinonSandbox = createSandbox();
-  consoleLogStub = sinonSandbox.stub(console, 'log');
-  consoleErrorStub = sinonSandbox.stub(console, 'error');
 });
 
-test.serial.afterEach(() => {
+test.afterEach(() => {
   revertTestDataFolder();
   sinonSandbox.restore();
 });
@@ -48,17 +46,26 @@ test.serial('ensureUpdatedCopyrightHeader', t => {
   assertFileContent(
     t,
     'file-javascript-with-header-start-year.js',
-    '/* Copyright (c) 2015 CopyrightHolder */\n\n' + "console.log('Test');"
+    '/* Copyright (c) 2015-2018 CopyrightHolder */\n\n' + "console.log('Test');"
   );
 
   assertFileContent(
     t,
     'file-javascript-with-header-start-year-to-year.js',
-    '/* Copyright (c) 2015-2017 CopyrightHolder */\n\n' + "console.log('Test');"
+    '/* Copyright (c) 2015-2018 CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-present.js',
+    '/* Copyright (c) 2014-present CopyrightHolder */\n\n' + "console.log('Test');"
   );
 });
 
 test.serial('--copyrightHolder is required', t => {
+  consoleLogStub = sinonSandbox.stub(console, 'log');
+  consoleErrorStub = sinonSandbox.stub(console, 'error');
+
   runCli(['node', 'script.js', '--include', TEST_DATA_FOLDER]);
 
   t.is(consoleErrorStub.callCount, 1);

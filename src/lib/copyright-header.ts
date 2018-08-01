@@ -1,15 +1,16 @@
 /* Copyright (c) 2018 Marco Stahl */
 
-import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
+import { getFileInfoFromGit, getGitFiles } from './git';
 import { renderSimpleTemplate } from './simple-template';
+import { FileInfo } from './types';
 
 const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = ['ts', 'js'];
 const COPYRIGHT_HEADER_REGEXP = /^\/\*[\s\S]*?Copyright[\s\S]*?\*\//;
 const COPYRIGHT_TEMPLATE = `/* Copyright (c) $from$to $copyrightHolder */`;
 
-const FIND_YEARS_REGEXP = /\b20\d{2}\b/g;
+const FIND_YEARS_REGEXP = /\b20\d{2}\b|present/g;
 
 export interface FileFilter {
   readonly include: ReadonlyArray<string>;
@@ -22,20 +23,21 @@ export interface Options extends FileFilter {
 
 export function ensureUpdatedCopyrightHeader(opts: Options): void {
   const files = collectFiles(opts);
+  const fileInfos: FileInfo[] = files.map(getFileInfoFromGit);
 
-  for (const fileName of files) {
-    const fileContent = fs.readFileSync(fileName, 'utf8');
-    console.log(`Checking ${fileName} ...`);
-    const newFileContent = updateCopyrightHeader(opts, fileContent);
+  for (const fileInfo of fileInfos) {
+    const fileContent = fs.readFileSync(fileInfo.filename, 'utf8');
+    console.log(`Checking ${fileInfo.filename} ...`);
+    const newFileContent = updateCopyrightHeader(opts, fileInfo, fileContent);
     if (newFileContent !== fileContent) {
-      console.log(`Update copyright header in  ${fileName}`);
-      fs.writeFileSync(fileName, newFileContent);
+      console.log(`Update copyright header in  ${fileInfo.filename}`);
+      fs.writeFileSync(fileInfo.filename, newFileContent);
     }
   }
 }
 
 export function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
-  const gitFiles = child_process.execSync('git ls-files', { encoding: 'utf8' }).split('\n');
+  const gitFiles = getGitFiles();
 
   const includeRegexps = fileFilter.include.map(pattern => new RegExp(pattern));
   const includeFilter = (filename: string) =>
@@ -56,35 +58,51 @@ interface YearRange {
   readonly to?: string;
 }
 
-function getCopyrightYears(currentHeader?: string): YearRange {
+function getMaxYear(year1: number, yearOrPresent2: string | null): string {
+  if (!yearOrPresent2) {
+    return year1.toString();
+  } else if (yearOrPresent2 === 'present') {
+    return 'present';
+  } else {
+    const year2 = parseInt(yearOrPresent2, 10);
+    return Math.max(year1, year2).toString();
+  }
+}
+
+function getCopyrightYears(fileInfo: FileInfo, currentHeader: string | undefined): YearRange {
   const copyrightYears = currentHeader && currentHeader.match(FIND_YEARS_REGEXP);
   if (copyrightYears && copyrightYears.length > 0) {
     return {
       from: copyrightYears[0],
-      to: copyrightYears[1]
+      to: getMaxYear(fileInfo.updatedYear, copyrightYears[1])
     };
   } else {
-    return { from: new Date().getFullYear().toString() };
+    return { from: fileInfo.createdYear.toString(), to: fileInfo.updatedYear.toString() };
   }
 }
 
-function renderNewHeader(copyrightHolder: string, currentHeader?: string): string {
-  const copyrightYears = getCopyrightYears(currentHeader);
+function renderNewHeader(
+  fileInfo: FileInfo,
+  copyrightHolder: string,
+  currentHeader?: string
+): string {
+  const copyrightYears = getCopyrightYears(fileInfo, currentHeader);
+  const needToShowUpdatedYear = copyrightYears.to && copyrightYears.to !== copyrightYears.from;
   return renderSimpleTemplate(COPYRIGHT_TEMPLATE, {
     from: copyrightYears.from,
-    to: copyrightYears.to ? '-' + copyrightYears.to : '',
+    to: needToShowUpdatedYear ? '-' + copyrightYears.to : '',
     copyrightHolder: copyrightHolder
   });
 }
 
-function updateCopyrightHeader(opts: Options, fileContent: string): string {
+function updateCopyrightHeader(opts: Options, fileInfo: FileInfo, fileContent: string): string {
   const headMatch = fileContent.match(COPYRIGHT_HEADER_REGEXP);
   if (headMatch) {
     return fileContent.replace(
       COPYRIGHT_HEADER_REGEXP,
-      renderNewHeader(opts.copyrightHolder, headMatch[0])
+      renderNewHeader(fileInfo, opts.copyrightHolder, headMatch[0])
     );
   } else {
-    return renderNewHeader(opts.copyrightHolder) + '\n\n' + fileContent;
+    return renderNewHeader(fileInfo, opts.copyrightHolder) + '\n\n' + fileContent;
   }
 }

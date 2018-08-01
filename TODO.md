@@ -1,2 +1,4 @@
 TODO:
-* Use git to get copyright years
+* Manual testing
+* More file types
+* Support headers in HTML
