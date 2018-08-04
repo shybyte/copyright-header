@@ -14,7 +14,6 @@ export function getGitFiles(): string[] {
   return execToLines('git ls-files');
 }
 
-
 function invertedGrepOptions(excludeCommitPattern?: string): string {
   return excludeCommitPattern ? '--invert-grep --grep=' + excludeCommitPattern : '';
 }
