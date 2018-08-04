@@ -82,8 +82,9 @@ test.serial('--copyrightHolder is required', t => {
   consoleLogStub = sinonSandbox.stub(console, 'log');
   consoleErrorStub = sinonSandbox.stub(console, 'error');
 
-  runCli(['node', 'script.js', '--include', TEST_DATA_FOLDER]);
+  const exitCode = runCli(['node', 'script.js', '--include', TEST_DATA_FOLDER]);
 
+  t.is(exitCode, ExitCode.ERROR);
   t.is(consoleErrorStub.callCount, 1);
   t.deepEqual(consoleErrorStub.getCall(0).args, ['Please specify --copyrightHolder']);
   t.is(consoleLogStub.callCount, 0);

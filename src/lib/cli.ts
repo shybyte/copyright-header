@@ -26,7 +26,7 @@ export function runCli(argv: string[], version = 'unknown'): ExitCode {
 
   if (!options.copyrightHolder) {
     console.error('Please specify --copyrightHolder');
-    return ExitCode.OK;
+    return ExitCode.ERROR;
   }
 
   const result = ensureUpdatedCopyrightHeader({
@@ -34,7 +34,7 @@ export function runCli(argv: string[], version = 'unknown'): ExitCode {
     fix: options.fix,
     exclude: options.exclude,
     copyrightHolder: options.copyrightHolder,
-    excludeCommits: options.excludeCommits,
+    excludeCommits: options.excludeCommits
   });
 
   return result.unFixedFiles.length ? ExitCode.ERROR : ExitCode.OK;
