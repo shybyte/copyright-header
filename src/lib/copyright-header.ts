@@ -6,7 +6,22 @@ import { getFileInfoFromGit, getGitFiles } from './git';
 import { renderSimpleTemplate } from './simple-template';
 import { FileInfo } from './types';
 
-const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = ['ts', 'js'];
+const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = [
+  'ts',
+  'js',
+  'tsx',
+  'jsx',
+  'java',
+  'cs',
+  'm',
+  'h',
+  'c',
+  'cc',
+  'cpp',
+  'c++',
+  'cxx',
+  'cp'
+];
 const COPYRIGHT_HEADER_REGEXP = /^\/\*[\s\S]*?Copyright[\s\S]*?\*\//;
 const COPYRIGHT_TEMPLATE = `/* Copyright (c) $from$to $copyrightHolder */`;
 
@@ -64,7 +79,7 @@ export function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
   return gitFiles
     .filter(includeFilter)
     .filter(excludeFilter)
-    .filter(filename => CREATIVE_FILE_EXTENSIONS.includes(path.extname(filename).slice(1)));
+    .filter(filename => CREATIVE_FILE_EXTENSIONS.includes(path.extname(filename).toLowerCase().slice(1)));
 }
 
 interface YearRange {
