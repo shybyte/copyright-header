@@ -1,5 +1,4 @@
-TODO:
-* Filter git commits for copyright year detection  
+TODO:  
 * Manual testing
 * More file types
 * Support headers in HTML
