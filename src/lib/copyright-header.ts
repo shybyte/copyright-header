@@ -79,7 +79,14 @@ export function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
   return gitFiles
     .filter(includeFilter)
     .filter(excludeFilter)
-    .filter(filename => CREATIVE_FILE_EXTENSIONS.includes(path.extname(filename).toLowerCase().slice(1)));
+    .filter(filename =>
+      CREATIVE_FILE_EXTENSIONS.includes(
+        path
+          .extname(filename)
+          .toLowerCase()
+          .slice(1)
+      )
+    );
 }
 
 interface YearRange {
