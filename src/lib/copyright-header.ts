@@ -20,6 +20,7 @@ export interface FileFilter {
 export interface Options extends FileFilter {
   readonly copyrightHolder: string;
   readonly fix: boolean;
+  readonly excludeCommits?: string;
 }
 
 interface ValidationResult {
@@ -28,7 +29,7 @@ interface ValidationResult {
 
 export function ensureUpdatedCopyrightHeader(opts: Options): ValidationResult {
   const files = collectFiles(opts);
-  const fileInfos: FileInfo[] = files.map(getFileInfoFromGit);
+  const fileInfos: FileInfo[] = files.map(f => getFileInfoFromGit(f, opts.excludeCommits));
   const unFixedFiles = [];
 
   for (const fileInfo of fileInfos) {

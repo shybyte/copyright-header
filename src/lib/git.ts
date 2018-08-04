@@ -14,8 +14,14 @@ export function getGitFiles(): string[] {
   return execToLines('git ls-files');
 }
 
-export function getFileInfoFromGit(filename: string): FileInfo {
-  const logDates = execToLines(`git log --format=%aD --follow -- ${filename}`);
+
+function invertedGrepOptions(excludeCommitPattern?: string): string {
+  return excludeCommitPattern ? '--invert-grep --grep=' + excludeCommitPattern : '';
+}
+
+export function getFileInfoFromGit(filename: string, excludeCommits?: string): FileInfo {
+  const grepFlag = invertedGrepOptions(excludeCommits);
+  const logDates = execToLines(`git log --format=%aD --follow ${grepFlag} -- ${filename}`);
 
   return {
     filename,
@@ -23,3 +29,7 @@ export function getFileInfoFromGit(filename: string): FileInfo {
     updatedYear: new Date(logDates[0]).getFullYear()
   };
 }
+
+export const testExports = {
+  invertedGrepOptions
+};
