@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.2.0"></a>
+# [0.2.0](https://github.com/shybyte/copyright-header/compare/v0.1.0...v0.2.0) (2018-08-04)
+
+
+### Features
+
+* Validate copyright-headers by default, fix only if --fix option is specified ([4c7c3c8](https://github.com/shybyte/copyright-header/commit/4c7c3c8))
+
+
+
 <a name="0.1.0"></a>
 # [0.1.0](https://github.com/shybyte/copyright-header/compare/v0.0.3...v0.1.0) (2018-08-01)
 
