@@ -27,7 +27,13 @@ As local devDependency:
    
 ## Usage Examples (assuming global installation)
 
+Validation:
+
     copyright-header --copyrightHolder "Darth Fader" --include "src" --exclude "src/cli.ts"
+
+Fixing:
+
+    copyright-header --fix --copyrightHolder "Darth Fader" --include "src" --exclude "src/cli.ts"
 
 ## License
 
