@@ -7,24 +7,33 @@ function parseList(val: string): ReadonlyArray<string> {
   return val.split(',');
 }
 
-export function runCli(argv: string[], version = 'unknown'): void {
+export const enum ExitCode {
+  OK = 0,
+  ERROR = 1
+}
+
+export function runCli(argv: string[], version = 'unknown'): ExitCode {
   const commander = new Command();
   commander
     .version(version)
     .option('-i, --include [paths]', 'include regexp file filter', parseList, [])
     .option('-e, --exclude [paths]', 'exclude regexp file filter', parseList, [])
+    .option('--fix', 'adds or updates copyright header to files', false)
     .option('--copyrightHolder <name>', 'Copyright Holder');
 
   const options: Options = commander.parse(argv) as any;
 
   if (!options.copyrightHolder) {
     console.error('Please specify --copyrightHolder');
-    return;
+    return ExitCode.OK;
   }
 
-  ensureUpdatedCopyrightHeader({
+  const result = ensureUpdatedCopyrightHeader({
     include: options.include,
+    fix: options.fix,
     exclude: options.exclude,
     copyrightHolder: options.copyrightHolder
   });
+
+  return result.unFixedFiles.length ? ExitCode.ERROR : ExitCode.OK;
 }

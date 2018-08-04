@@ -34,5 +34,10 @@
     ],
     "no-if-statement": false
     /* end tslint-immutable rules */
+  },
+  "linterOptions": {
+    "exclude": [
+      "package.json"
+    ]
   }
 }

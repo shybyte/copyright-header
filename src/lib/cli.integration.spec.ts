@@ -5,7 +5,7 @@ import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
 import { createSandbox, SinonSandbox, SinonStub } from 'sinon';
-import { runCli } from './cli';
+import { ExitCode, runCli } from './cli';
 
 const TEST_DATA_FOLDER = 'test-data';
 
@@ -27,8 +27,8 @@ test.afterEach(() => {
   sinonSandbox.restore();
 });
 
-test.serial('ensureUpdatedCopyrightHeader', t => {
-  runCli([
+test.serial('validate but not fix', t => {
+  const exitCode = runCli([
     'node',
     'script.js',
     '--include',
@@ -36,6 +36,22 @@ test.serial('ensureUpdatedCopyrightHeader', t => {
     '--copyrightHolder',
     'CopyrightHolder'
   ]);
+
+  t.is(exitCode, ExitCode.ERROR);
+});
+
+test.serial('--fix', t => {
+  const exitCode = runCli([
+    'node',
+    'script.js',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--copyrightHolder',
+    'CopyrightHolder',
+    '--fix'
+  ]);
+
+  t.is(exitCode, ExitCode.OK);
 
   assertFileContent(
     t,

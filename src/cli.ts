@@ -3,4 +3,8 @@
 import { version } from '../package.json';
 import { runCli } from './lib/cli';
 
-runCli(process.argv, version);
+const exitCode = runCli(process.argv, version);
+
+if (exitCode) {
+  process.exit(exitCode);
+}

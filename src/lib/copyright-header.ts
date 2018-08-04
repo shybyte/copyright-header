@@ -19,21 +19,34 @@ export interface FileFilter {
 
 export interface Options extends FileFilter {
   readonly copyrightHolder: string;
+  readonly fix: boolean;
 }
 
-export function ensureUpdatedCopyrightHeader(opts: Options): void {
+interface ValidationResult {
+  readonly unFixedFiles: ReadonlyArray<string>;
+}
+
+export function ensureUpdatedCopyrightHeader(opts: Options): ValidationResult {
   const files = collectFiles(opts);
   const fileInfos: FileInfo[] = files.map(getFileInfoFromGit);
+  const unFixedFiles = [];
 
   for (const fileInfo of fileInfos) {
     const fileContent = fs.readFileSync(fileInfo.filename, 'utf8');
     console.log(`Checking ${fileInfo.filename} ...`);
     const newFileContent = updateCopyrightHeader(opts, fileInfo, fileContent);
     if (newFileContent !== fileContent) {
-      console.log(`Update copyright header in  ${fileInfo.filename}`);
-      fs.writeFileSync(fileInfo.filename, newFileContent);
+      if (opts.fix) {
+        console.log(`Update copyright header in  ${fileInfo.filename}`);
+        fs.writeFileSync(fileInfo.filename, newFileContent);
+      } else {
+        console.log(`Need to fix copyright header in  ${fileInfo.filename}`);
+        unFixedFiles.push(fileInfo.filename);
+      }
     }
   }
+
+  return { unFixedFiles };
 }
 
 export function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
