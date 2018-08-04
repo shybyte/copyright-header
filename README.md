@@ -9,7 +9,7 @@
 [![dependencies Status](https://david-dm.org/shybyte/copyright-header/status.svg)](https://david-dm.org/shybyte/copyright-header)
 
 
-Add and update copyright headers automatically
+Validate, add and update copyright headers automatically, based on the git history.
 
 
 ## Installation
