@@ -22,9 +22,11 @@
     "fix": "run-s fix:*",
     "fix:prettier": "prettier \"src/**/*.ts\" --write",
     "fix:tslint": "tslint --fix --project .",
+    "fix:copyright": "node build/main/src/cli.js --fix --copyrightHolder \"Marco Stahl\" --include src --exclude \"src/cli.ts\"",
     "test": "run-s build test:*",
     "test:lint": "tslint --project . && prettier \"src/**/*.ts\" --list-different",
     "test:unit": "nyc --silent ava",
+    "test:copyright": "node build/main/src/cli.js --copyrightHolder \"Marco Stahl\" --include src --exclude \"src/cli.ts\"",
     "watch": "run-s clean build:main && run-p \"build:main -- -w\" \"test:unit -- --watch\"",
     "cov": "run-s build test:unit cov:html && opn coverage/index.html",
     "cov:html": "nyc report --reporter=html",
@@ -39,8 +41,7 @@
     "clean": "trash build test",
     "all": "run-s reset test cov:check",
     "prepare-release": "run-s all version",
-    "startOnTestData": "node build/main/cli.js --include \"test-data\" --copyrightHolder \"CopyrightHolder\"",
-    "startOnSrc": "node build/main/cli.js --copyrightHolder \"Marco Stahl\" --include src --exclude \"src/cli.ts\"",
+    "startOnTestData": "node build/main/src/cli.js --include \"test-data\" --copyrightHolder \"CopyrightHolder\"",
     "revertTestData": "git checkout HEAD -- test-data"
   },
   "scripts-info": {

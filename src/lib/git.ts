@@ -1,3 +1,5 @@
+/* Copyright (c) 2018 Marco Stahl */
+
 import * as child_process from 'child_process';
 import { FileInfo } from './types';
 
