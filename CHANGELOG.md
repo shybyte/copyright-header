@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.3.0"></a>
+# [0.3.0](https://github.com/shybyte/copyright-header/compare/v0.2.0...v0.3.0) (2018-08-04)
+
+
+### Bug Fixes
+
+* return ExitCode.ERROR if copyrightHolder is missing ([17d1568](https://github.com/shybyte/copyright-header/commit/17d1568))
+
+
+### Features
+
+* --excludeCommits ignores commits which message match this pattern ([4ac8d65](https://github.com/shybyte/copyright-header/commit/4ac8d65))
+* handle more file types ([0cd8971](https://github.com/shybyte/copyright-header/commit/0cd8971))
+
+
+
 <a name="0.2.0"></a>
 # [0.2.0](https://github.com/shybyte/copyright-header/compare/v0.1.0...v0.2.0) (2018-08-04)
 
