@@ -3,9 +3,11 @@
   "compilerOptions": {
     "target": "esnext",
     "outDir": "build/module",
-    "module": "esnext"
+    "module": "esnext",
+    "resolveJsonModule": false
   },
   "exclude": [
-    "node_modules/**"
+    "node_modules/**",
+    "src/cli.ts"
   ]
 }

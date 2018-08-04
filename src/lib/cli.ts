@@ -7,10 +7,10 @@ function parseList(val: string): ReadonlyArray<string> {
   return val.split(',');
 }
 
-export function runCli(argv: string[]): void {
+export function runCli(argv: string[], version = 'unknown'): void {
   const commander = new Command();
   commander
-    .version('0.0.1')
+    .version(version)
     .option('-i, --include [paths]', 'include regexp file filter', parseList, [])
     .option('-e, --exclude [paths]', 'exclude regexp file filter', parseList, [])
     .option('--copyrightHolder <name>', 'Copyright Holder');
