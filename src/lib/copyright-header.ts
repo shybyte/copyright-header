@@ -22,9 +22,8 @@ const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = [
   'cxx',
   'cp'
 ];
-const COPYRIGHT_HEADER_REGEXP = /^\/\*[\s\S]*?Copyright[\s\S]*?\*\//;
-const COPYRIGHT_TEMPLATE = `/* Copyright (c) $from$to $copyrightHolder */`;
 
+const COPYRIGHT_HEADER_REGEXP = /^\/\*[\s\S]*?Copyright[\s\S]*?\*\//;
 const FIND_YEARS_REGEXP = /\b20\d{2}\b|present/g;
 
 export interface FileFilter {
@@ -32,17 +31,18 @@ export interface FileFilter {
   readonly exclude: ReadonlyArray<string>;
 }
 
-export interface Options extends FileFilter {
+export interface ValidatedOptions extends FileFilter {
   readonly copyrightHolder: string;
   readonly fix: boolean;
   readonly excludeCommits?: string;
+  readonly template: string;
 }
 
 interface ValidationResult {
   readonly unFixedFiles: ReadonlyArray<string>;
 }
 
-export function ensureUpdatedCopyrightHeader(opts: Options): ValidationResult {
+export function ensureUpdatedCopyrightHeader(opts: ValidatedOptions): ValidationResult {
   const files = collectFiles(opts);
   const fileInfos: FileInfo[] = files.map(f => getFileInfoFromGit(f, opts.excludeCommits));
   const unFixedFiles = [];
@@ -117,28 +117,42 @@ function getCopyrightYears(fileInfo: FileInfo, currentHeader: string | undefined
   }
 }
 
-function renderNewHeader(
-  fileInfo: FileInfo,
-  copyrightHolder: string,
-  currentHeader?: string
-): string {
-  const copyrightYears = getCopyrightYears(fileInfo, currentHeader);
+function renderNewHeader(opts: {
+  readonly fileInfo: FileInfo;
+  readonly template: string;
+  readonly copyrightHolder: string;
+  readonly currentHeader?: string;
+}): string {
+  const copyrightYears = getCopyrightYears(opts.fileInfo, opts.currentHeader);
   const needToShowUpdatedYear = copyrightYears.to && copyrightYears.to !== copyrightYears.from;
-  return renderSimpleTemplate(COPYRIGHT_TEMPLATE, {
+  return renderSimpleTemplate(opts.template, {
     from: copyrightYears.from,
     to: needToShowUpdatedYear ? '-' + copyrightYears.to : '',
-    copyrightHolder: copyrightHolder
+    copyrightHolder: opts.copyrightHolder
   });
 }
 
-function updateCopyrightHeader(opts: Options, fileInfo: FileInfo, fileContent: string): string {
+function updateCopyrightHeader(
+  opts: ValidatedOptions,
+  fileInfo: FileInfo,
+  fileContent: string
+): string {
+  const renderOpts = {
+    fileInfo,
+    template: opts.template,
+    copyrightHolder: opts.copyrightHolder
+  };
+
   const headMatch = fileContent.match(COPYRIGHT_HEADER_REGEXP);
   if (headMatch) {
     return fileContent.replace(
       COPYRIGHT_HEADER_REGEXP,
-      renderNewHeader(fileInfo, opts.copyrightHolder, headMatch[0])
+      renderNewHeader({
+        ...renderOpts,
+        currentHeader: headMatch[0]
+      })
     );
   } else {
-    return renderNewHeader(fileInfo, opts.copyrightHolder) + '\n\n' + fileContent;
+    return renderNewHeader(renderOpts) + '\n\n' + fileContent;
   }
 }

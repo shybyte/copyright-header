@@ -90,6 +90,27 @@ test.serial('--copyrightHolder is required', t => {
   t.is(consoleLogStub.callCount, 0);
 });
 
+test.serial('--templateId validation', t => {
+  consoleLogStub = sinonSandbox.stub(console, 'log');
+  consoleErrorStub = sinonSandbox.stub(console, 'error');
+
+  const exitCode = runCli([
+    'node',
+    'script.js',
+    '--copyrightHolder',
+    'CopyrightHolder',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--templateId',
+    'unknownTemplateId'
+  ]);
+
+  t.is(exitCode, ExitCode.ERROR);
+  t.is(consoleErrorStub.callCount, 1);
+  t.deepEqual(consoleErrorStub.getCall(0).args, ['templateId must be one of [minimal, apache]']);
+  t.is(consoleLogStub.callCount, 0);
+});
+
 function assertFileContent(t: ExecutionContext<any>, file: string, content: string): void {
   const resultJs = fs.readFileSync(path.join(TEST_DATA_FOLDER, file), 'utf8');
   t.is(resultJs, content);
