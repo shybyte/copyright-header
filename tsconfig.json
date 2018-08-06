@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "outDir": "build/main",
-    // "rootDir": "src",
+    "rootDir": "src",
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "module": "commonjs",

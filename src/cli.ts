@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
-import { version } from '../package.json';
+// tslint:disable-next-line:no-var-requires
+const { version } = require('../../package.json');
 import { runCli } from './lib/cli';
 
 const exitCode = runCli(process.argv, version);
