@@ -23,12 +23,12 @@ export function runCli(argv: string[], version = 'unknown'): ExitCode {
   const commander = new Command();
   commander
     .version(version)
-    .option('-i, --include [paths]', 'include regexp file filter', parseList, [])
-    .option('-e, --exclude [paths]', 'exclude regexp file filter', parseList, [])
+    .option('-i, --include <paths>', 'include regexp file filter', parseList, [])
+    .option('-e, --exclude <paths>', 'exclude regexp file filter', parseList, [])
     .option('--fix', 'adds or updates copyright header to files', false)
     .option('--copyrightHolder <name>', 'Copyright Holder')
-    .option('--excludeCommits [pattern]', 'ignores commits which message match this pattern')
-    .option('--templateId [id]', TEMPLATE_IDS.join(' | '), DEFAULT_TEMPLATE_ID)
+    .option('--excludeCommits <pattern>', 'ignores commits which message match this pattern')
+    .option('--templateId <id>', TEMPLATE_IDS.join(' | '), DEFAULT_TEMPLATE_ID)
     .option('--forceModificationYear <year>', 'number | "present"');
 
   const options: CliOptions = commander.parse(argv) as any;
