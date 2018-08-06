@@ -1,6 +1,6 @@
 /* Copyright (c) 2018 Marco Stahl */
 
-import { ExecutionContext, test } from 'ava';
+import { ExecutionContext, Macro, test } from 'ava';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -78,38 +78,128 @@ test.serial('--fix', t => {
   );
 });
 
-test.serial('--copyrightHolder is required', t => {
-  consoleLogStub = sinonSandbox.stub(console, 'log');
-  consoleErrorStub = sinonSandbox.stub(console, 'error');
-
-  const exitCode = runCli(['node', 'script.js', '--include', TEST_DATA_FOLDER]);
-
-  t.is(exitCode, ExitCode.ERROR);
-  t.is(consoleErrorStub.callCount, 1);
-  t.deepEqual(consoleErrorStub.getCall(0).args, ['Please specify --copyrightHolder']);
-  t.is(consoleLogStub.callCount, 0);
-});
-
-test.serial('--templateId validation', t => {
-  consoleLogStub = sinonSandbox.stub(console, 'log');
-  consoleErrorStub = sinonSandbox.stub(console, 'error');
-
+test.serial('--forceModificationYear present', t => {
   const exitCode = runCli([
     'node',
     'script.js',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--copyrightHolder',
+    'CopyrightHolder',
+    '--forceModificationYear',
+    'present',
+    '--fix'
+  ]);
+
+  t.is(exitCode, ExitCode.OK);
+
+  assertFileContent(
+    t,
+    'file-javascript.js',
+    '/* Copyright (c) 2018-present CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year.js',
+    '/* Copyright (c) 2015-present CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-year.js',
+    '/* Copyright (c) 2015-present CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-present.js',
+    '/* Copyright (c) 2014-present CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+});
+test.serial('--forceModificationYear number', t => {
+  const exitCode = runCli([
+    'node',
+    'script.js',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--copyrightHolder',
+    'CopyrightHolder',
+    '--forceModificationYear',
+    '2018',
+    '--fix'
+  ]);
+
+  t.is(exitCode, ExitCode.OK);
+
+  assertFileContent(
+    t,
+    'file-javascript.js',
+    '/* Copyright (c) 2018 CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year.js',
+    '/* Copyright (c) 2015-2018 CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-year.js',
+    '/* Copyright (c) 2015-2018 CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-present.js',
+    '/* Copyright (c) 2014-2018 CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+});
+
+const verifyValidationError: Macro = (
+  t,
+  argv: ReadonlyArray<string>,
+  expectedErrorMessage: string
+) => {
+  consoleLogStub = sinonSandbox.stub(console, 'log');
+  consoleErrorStub = sinonSandbox.stub(console, 'error');
+
+  const exitCode = runCli(['node', 'script.js', ...argv]);
+
+  t.is(exitCode, ExitCode.ERROR);
+  t.is(consoleErrorStub.callCount, 1);
+  t.deepEqual(consoleErrorStub.getCall(0).args, [expectedErrorMessage]);
+  t.is(consoleLogStub.callCount, 0);
+};
+
+test.serial(
+  '--copyrightHolder is required',
+  verifyValidationError,
+  ['--include', TEST_DATA_FOLDER],
+  'Please specify --copyrightHolder'
+);
+
+test.serial(
+  '--templateId validation',
+  verifyValidationError,
+  [
     '--copyrightHolder',
     'CopyrightHolder',
     '--include',
     TEST_DATA_FOLDER,
     '--templateId',
     'unknownTemplateId'
-  ]);
+  ],
+  'templateId must be one of [minimal, apache]'
+);
 
-  t.is(exitCode, ExitCode.ERROR);
-  t.is(consoleErrorStub.callCount, 1);
-  t.deepEqual(consoleErrorStub.getCall(0).args, ['templateId must be one of [minimal, apache]']);
-  t.is(consoleLogStub.callCount, 0);
-});
+test.serial(
+  '--forceModificationYear',
+  verifyValidationError,
+  ['--copyrightHolder', 'CopyrightHolder', '--forceModificationYear', 'noNumber'],
+  '--forceModificationYear: "noNumber" is not a valid year. It must be a number or "present"'
+);
 
 function assertFileContent(t: ExecutionContext<any>, file: string, content: string): void {
   const resultJs = fs.readFileSync(path.join(TEST_DATA_FOLDER, file), 'utf8');

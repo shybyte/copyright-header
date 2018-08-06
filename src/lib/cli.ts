@@ -3,10 +3,8 @@
 import { Command } from 'commander';
 import { ensureUpdatedCopyrightHeader, FileFilter } from './copyright-header';
 import { DEFAULT_TEMPLATE_ID, TEMPLATE_IDS, TEMPLATES } from './templates';
-
-function parseList(val: string): ReadonlyArray<string> {
-  return val.split(',');
-}
+import { ToYear } from './types';
+import { mapOptional, Result } from './utils';
 
 export const enum ExitCode {
   OK = 0,
@@ -18,6 +16,7 @@ export interface CliOptions extends FileFilter {
   readonly fix: boolean;
   readonly templateId: string;
   readonly excludeCommits?: string;
+  readonly forceModificationYear?: string;
 }
 
 export function runCli(argv: string[], version = 'unknown'): ExitCode {
@@ -29,18 +28,22 @@ export function runCli(argv: string[], version = 'unknown'): ExitCode {
     .option('--fix', 'adds or updates copyright header to files', false)
     .option('--copyrightHolder <name>', 'Copyright Holder')
     .option('--excludeCommits [pattern]', 'ignores commits which message match this pattern')
-    .option('--templateId [id]', TEMPLATE_IDS.join(' | '), DEFAULT_TEMPLATE_ID);
+    .option('--templateId [id]', TEMPLATE_IDS.join(' | '), DEFAULT_TEMPLATE_ID)
+    .option('--forceModificationYear <year>', 'number | "present"');
 
   const options: CliOptions = commander.parse(argv) as any;
 
   if (!options.copyrightHolder) {
-    console.error('Please specify --copyrightHolder');
-    return ExitCode.ERROR;
+    return reportError('Please specify --copyrightHolder');
   }
 
   if (options.templateId && !(options.templateId in TEMPLATES)) {
-    console.error(`templateId must be one of [${TEMPLATE_IDS.join(', ')}]`);
-    return ExitCode.ERROR;
+    return reportError(`templateId must be one of [${TEMPLATE_IDS.join(', ')}]`);
+  }
+
+  const forceModificationYear = mapOptional(options.forceModificationYear, parseModificationYear);
+  if (forceModificationYear instanceof Error) {
+    return reportError('--forceModificationYear: ' + forceModificationYear.message);
   }
 
   const result = ensureUpdatedCopyrightHeader({
@@ -49,8 +52,30 @@ export function runCli(argv: string[], version = 'unknown'): ExitCode {
     exclude: options.exclude,
     copyrightHolder: options.copyrightHolder,
     excludeCommits: options.excludeCommits,
-    template: TEMPLATES[options.templateId]
+    template: TEMPLATES[options.templateId],
+    forceModificationYear: forceModificationYear
   });
 
   return result.unFixedFiles.length ? ExitCode.ERROR : ExitCode.OK;
+}
+
+function reportError(message: string): ExitCode {
+  console.error(message);
+  return ExitCode.ERROR;
+}
+
+function parseList(val: string): ReadonlyArray<string> {
+  return val.split(',');
+}
+
+function parseModificationYear(year: string): Result<ToYear> {
+  if (year === 'present') {
+    return 'present';
+  } else {
+    const yearNumber = parseInt(year, 10);
+    if (isNaN(yearNumber)) {
+      return new Error(`"${year}" is not a valid year. It must be a number or "present"`);
+    }
+    return yearNumber;
+  }
 }

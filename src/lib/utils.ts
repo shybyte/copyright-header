@@ -21,3 +21,5 @@ export function mapOptional<T, R>(x: T | undefined, f: (y: T) => R): R | undefin
 export function getYearFromTimestamp(timestamp: number | string): number {
   return new Date(timestamp).getFullYear();
 }
+
+export type Result<T> = T | Error;

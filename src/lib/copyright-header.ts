@@ -36,6 +36,7 @@ export interface ValidatedOptions extends FileFilter {
   readonly fix: boolean;
   readonly excludeCommits?: string;
   readonly template: string;
+  readonly forceModificationYear?: ToYear;
 }
 
 interface ValidationResult {
@@ -110,15 +111,19 @@ function getMaxYear(year1: number, yearOrPresent2: string | null): ToYear {
   }
 }
 
-function getCopyrightYears(fileInfo: FileInfo, currentHeader: string | undefined): YearRange {
+function getCopyrightYears(
+  fileInfo: FileInfo,
+  currentHeader: string | undefined,
+  forceModificationYear?: ToYear
+): YearRange {
   const copyrightYears = currentHeader && currentHeader.match(FIND_YEARS_REGEXP);
   if (copyrightYears && copyrightYears.length > 0) {
     return {
       from: parseInt(copyrightYears[0], 10),
-      to: getMaxYear(fileInfo.updatedYear, copyrightYears[1])
+      to: forceModificationYear || getMaxYear(fileInfo.updatedYear, copyrightYears[1])
     };
   } else {
-    return { from: fileInfo.createdYear, to: fileInfo.updatedYear };
+    return { from: fileInfo.createdYear, to: forceModificationYear || fileInfo.updatedYear };
   }
 }
 
@@ -127,8 +132,13 @@ function renderNewHeader(opts: {
   readonly template: string;
   readonly copyrightHolder: string;
   readonly currentHeader?: string;
+  readonly forceModificationYear?: ToYear;
 }): string {
-  const copyrightYears = getCopyrightYears(opts.fileInfo, opts.currentHeader);
+  const copyrightYears = getCopyrightYears(
+    opts.fileInfo,
+    opts.currentHeader,
+    opts.forceModificationYear
+  );
   const needToShowUpdatedYear = copyrightYears.to && copyrightYears.to !== copyrightYears.from;
   return renderSimpleTemplate(opts.template, {
     from: copyrightYears.from.toString(),
@@ -145,7 +155,8 @@ function updateCopyrightHeader(
   const renderOpts = {
     fileInfo,
     template: opts.template,
-    copyrightHolder: opts.copyrightHolder
+    copyrightHolder: opts.copyrightHolder,
+    forceModificationYear: opts.forceModificationYear
   };
 
   const headMatch = fileContent.match(COPYRIGHT_HEADER_REGEXP);
