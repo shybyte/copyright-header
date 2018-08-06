@@ -5,3 +5,10 @@ export interface FileInfo {
   readonly createdYear: number;
   readonly updatedYear: number;
 }
+
+export type ToYear = number | 'present';
+
+export interface YearRange {
+  readonly from: number;
+  readonly to?: number | 'present';
+}

@@ -4,7 +4,7 @@ import * as fs from 'fs';
 import * as path from 'path';
 import { getFileInfoFromGit, getGitFiles } from './git';
 import { renderSimpleTemplate } from './simple-template';
-import { FileInfo } from './types';
+import { FileInfo, ToYear, YearRange } from './types';
 
 const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = [
   'ts',
@@ -89,19 +89,14 @@ function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
     );
 }
 
-interface YearRange {
-  readonly from: string;
-  readonly to?: string;
-}
-
-function getMaxYear(year1: number, yearOrPresent2: string | null): string {
+function getMaxYear(year1: number, yearOrPresent2: string | null): ToYear {
   if (!yearOrPresent2) {
-    return year1.toString();
+    return year1;
   } else if (yearOrPresent2 === 'present') {
     return 'present';
   } else {
     const year2 = parseInt(yearOrPresent2, 10);
-    return Math.max(year1, year2).toString();
+    return Math.max(year1, year2);
   }
 }
 
@@ -109,11 +104,11 @@ function getCopyrightYears(fileInfo: FileInfo, currentHeader: string | undefined
   const copyrightYears = currentHeader && currentHeader.match(FIND_YEARS_REGEXP);
   if (copyrightYears && copyrightYears.length > 0) {
     return {
-      from: copyrightYears[0],
+      from: parseInt(copyrightYears[0], 10),
       to: getMaxYear(fileInfo.updatedYear, copyrightYears[1])
     };
   } else {
-    return { from: fileInfo.createdYear.toString(), to: fileInfo.updatedYear.toString() };
+    return { from: fileInfo.createdYear, to: fileInfo.updatedYear };
   }
 }
 
@@ -126,7 +121,7 @@ function renderNewHeader(opts: {
   const copyrightYears = getCopyrightYears(opts.fileInfo, opts.currentHeader);
   const needToShowUpdatedYear = copyrightYears.to && copyrightYears.to !== copyrightYears.from;
   return renderSimpleTemplate(opts.template, {
-    from: copyrightYears.from,
+    from: copyrightYears.from.toString(),
     to: needToShowUpdatedYear ? '-' + copyrightYears.to : '',
     copyrightHolder: opts.copyrightHolder
   });
