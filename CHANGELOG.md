@@ -2,6 +2,22 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+<a name="0.4.0"></a>
+# [0.4.0](https://github.com/shybyte/copyright-header/compare/v0.3.0...v0.4.0) (2018-08-06)
+
+
+### Bug Fixes
+
+* NaN for added files without git log entry ([821b040](https://github.com/shybyte/copyright-header/commit/821b040))
+
+
+### Features
+
+* --forceModificationYear ([9262d02](https://github.com/shybyte/copyright-header/commit/9262d02))
+* --templateId [minimal | apache] ([a8e3eed](https://github.com/shybyte/copyright-header/commit/a8e3eed))
+
+
+
 <a name="0.3.0"></a>
 # [0.3.0](https://github.com/shybyte/copyright-header/compare/v0.2.0...v0.3.0) (2018-08-04)
 
