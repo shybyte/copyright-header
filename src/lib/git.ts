@@ -1,7 +1,7 @@
 /* Copyright (c) 2018 Marco Stahl */
 
 import * as child_process from 'child_process';
-import { FileInfo } from './types';
+import { first, getYearFromTimestamp, last, mapOptional } from './utils';
 
 function execToLines(command: string): string[] {
   return child_process
@@ -18,14 +18,20 @@ function invertedGrepOptions(excludeCommitPattern?: string): string {
   return excludeCommitPattern ? '--invert-grep --grep=' + excludeCommitPattern : '';
 }
 
-export function getFileInfoFromGit(filename: string, excludeCommits?: string): FileInfo {
+export interface GitFileInfo {
+  readonly filename: string;
+  readonly createdYear?: number;
+  readonly updatedYear?: number;
+}
+
+export function getFileInfoFromGit(filename: string, excludeCommits?: string): GitFileInfo {
   const grepFlag = invertedGrepOptions(excludeCommits);
   const logDates = execToLines(`git log --format=%aD --follow ${grepFlag} -- ${filename}`);
 
   return {
     filename,
-    createdYear: new Date(logDates[logDates.length - 1]).getFullYear(),
-    updatedYear: new Date(logDates[0]).getFullYear()
+    createdYear: mapOptional(last(logDates), getYearFromTimestamp),
+    updatedYear: mapOptional(first(logDates), getYearFromTimestamp)
   };
 }
 

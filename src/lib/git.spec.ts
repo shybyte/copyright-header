@@ -10,8 +10,8 @@ test('getFileInfoFromGit', t => {
 
   t.is(fileinfo.filename, 'README.md');
   t.is(fileinfo.createdYear, 2018);
-  t.true(!isNaN(fileinfo.updatedYear));
-  t.true(fileinfo.updatedYear >= 2018);
+  t.true(!isNaN(fileinfo.updatedYear!));
+  t.true(fileinfo.updatedYear! >= 2018);
 });
 
 test('invertedGrepOptions', t => {

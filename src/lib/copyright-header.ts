@@ -2,7 +2,7 @@
 
 import * as fs from 'fs';
 import * as path from 'path';
-import { getFileInfoFromGit, getGitFiles } from './git';
+import { getFileInfoFromGit, getGitFiles, GitFileInfo } from './git';
 import { renderSimpleTemplate } from './simple-template';
 import { FileInfo, ToYear, YearRange } from './types';
 
@@ -44,7 +44,9 @@ interface ValidationResult {
 
 export function ensureUpdatedCopyrightHeader(opts: ValidatedOptions): ValidationResult {
   const files = collectFiles(opts);
-  const fileInfos: FileInfo[] = files.map(f => getFileInfoFromGit(f, opts.excludeCommits));
+  const fileInfos: FileInfo[] = files.map(f =>
+    useTodayAsYearDefault(getFileInfoFromGit(f, opts.excludeCommits))
+  );
   const unFixedFiles = [];
 
   for (const fileInfo of fileInfos) {
@@ -63,6 +65,14 @@ export function ensureUpdatedCopyrightHeader(opts: ValidatedOptions): Validation
   }
 
   return { unFixedFiles };
+}
+
+function useTodayAsYearDefault(fileinfo: GitFileInfo): FileInfo {
+  return {
+    filename: fileinfo.filename,
+    createdYear: fileinfo.createdYear || new Date().getFullYear(),
+    updatedYear: fileinfo.updatedYear || new Date().getFullYear()
+  };
 }
 
 function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
@@ -153,5 +163,6 @@ function updateCopyrightHeader(
 }
 
 export const testExports = {
-  collectFiles
+  collectFiles,
+  useTodayAsYearDefault
 };

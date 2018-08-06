@@ -5,7 +5,7 @@
 import { Macro, test } from 'ava';
 import { testExports } from './copyright-header';
 
-const { collectFiles } = testExports;
+const { collectFiles, useTodayAsYearDefault } = testExports;
 
 const collectFilesTest: Macro = (
   t,
@@ -42,4 +42,13 @@ test('collectFiles - exclude filter over include filter', t => {
     collectFiles({ include: ['test-data'], exclude: ['.*\\.ts$'] }),
     ALL_TEST_DATA_FILES.filter(f => !f.endsWith('.ts'))
   );
+});
+
+test('useTodayAsYearDefault', t => {
+  const thisYear = new Date().getFullYear();
+  t.deepEqual(useTodayAsYearDefault({ filename: 'dummy' }), {
+    filename: 'dummy',
+    createdYear: thisYear,
+    updatedYear: thisYear
+  });
 });
