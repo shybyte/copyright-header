@@ -3,7 +3,9 @@
 // tslint:disable:no-expression-statement no-object-mutation
 
 import { Macro, test } from 'ava';
-import { collectFiles } from './copyright-header';
+import { testExports } from './copyright-header';
+
+const { collectFiles } = testExports;
 
 const collectFilesTest: Macro = (
   t,

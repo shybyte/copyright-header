@@ -65,7 +65,7 @@ export function ensureUpdatedCopyrightHeader(opts: ValidatedOptions): Validation
   return { unFixedFiles };
 }
 
-export function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
+function collectFiles(fileFilter: FileFilter): ReadonlyArray<string> {
   const gitFiles = getGitFiles();
 
   const includeRegexps = fileFilter.include.map(pattern => new RegExp(pattern));
@@ -156,3 +156,7 @@ function updateCopyrightHeader(
     return renderNewHeader(renderOpts) + '\n\n' + fileContent;
   }
 }
+
+export const testExports = {
+  collectFiles
+};
