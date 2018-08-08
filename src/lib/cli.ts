@@ -22,14 +22,14 @@ export interface CliOptions extends FileFilter {
 export function runCli(argv: string[], version = 'unknown'): ExitCode {
   const commander = new Command();
   commander
-    .version(version)
+    .option('--copyrightHolder <name>', 'Copyright Holder')
+    .option('--fix', 'adds or updates copyright header to files', false)
+    .option('--templateId <id>', TEMPLATE_IDS.join(' | '), DEFAULT_TEMPLATE_ID)
     .option('-i, --include <paths>', 'include regexp file filter', parseList, [])
     .option('-e, --exclude <paths>', 'exclude regexp file filter', parseList, [])
-    .option('--fix', 'adds or updates copyright header to files', false)
-    .option('--copyrightHolder <name>', 'Copyright Holder')
+    .option('--forceModificationYear <year>', 'number | "present"')
     .option('--excludeCommits <pattern>', 'ignores commits which message match this pattern')
-    .option('--templateId <id>', TEMPLATE_IDS.join(' | '), DEFAULT_TEMPLATE_ID)
-    .option('--forceModificationYear <year>', 'number | "present"');
+    .version(version);
 
   const options: CliOptions = commander.parse(argv) as any;
 

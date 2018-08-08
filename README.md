@@ -23,7 +23,12 @@ Global:
 As local devDependency:
    
     npm i -D copyright-header
+    
+# Usage Hints
 
+* Use it inside of an git repo
+* It will only affect files tracked by git
+*     
    
 ## Usage Examples (assuming global installation)
 
@@ -34,6 +39,25 @@ Validation:
 Fixing:
 
     copyright-header --fix --copyrightHolder "Darth Fader" --include "src" --exclude "src/cli.ts"
+
+
+# Options
+
+    Usage: copyright-header [options]
+  
+    Options:
+  
+      --copyrightHolder <name>        Copyright Holder
+      --fix                           adds or updates copyright header to files
+      --templateId <id>               minimal | apache (default: minimal)
+      -i, --include <paths>           include regexp file filter (default: )
+      -e, --exclude <paths>           exclude regexp file filter (default: )
+      --forceModificationYear <year>  number | "present"
+      --excludeCommits <pattern>      ignores commits which message match this pattern
+      -V, --version                   output the version number
+      -h, --help                      output usage information
+
+
 
 ## License
 
