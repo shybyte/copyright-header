@@ -9,7 +9,7 @@ export const DEFAULT_TEMPLATE_ID = 'minimal';
 export const TEMPLATES: StringMap = {
   [DEFAULT_TEMPLATE_ID]: '/* Copyright (c) $from$to $copyrightHolder */',
   apache: `
-/**
+/*
  * Copyright $from$to $copyrightHolder
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
