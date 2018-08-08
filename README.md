@@ -26,9 +26,8 @@ As local devDependency:
     
 # Usage Hints
 
-* Use it inside of an git repo
-* It will only affect files tracked by git
-*     
+* Use it inside of an git repo.
+* It will only affect files tracked by git.
    
 ## Usage Examples (assuming global installation)
 
