@@ -1,6 +1,6 @@
 {
   "name": "copyright-header",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "Validate, add and update copyright headers automatically, based on the git history.",
   "bin": {
     "copyright-header": "build/main/cli.js"
