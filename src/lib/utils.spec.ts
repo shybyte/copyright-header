@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 Marco Stahl */
+/* Copyright (c) 2018-2019 Marco Stahl */
 
 import test from 'ava';
 import { mapOptional } from './utils';

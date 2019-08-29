@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 Marco Stahl */
+/* Copyright (c) 2018-2019 Marco Stahl */
 
 import test, { ExecutionContext } from 'ava';
 import * as child_process from 'child_process';
