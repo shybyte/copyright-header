@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 Marco Stahl */
+/* Copyright (c) 2018-2019 Marco Stahl */
 
 // tslint:disable:no-expression-statement no-object-mutation
 
@@ -15,6 +15,10 @@ test('getFileInfoFromGit', t => {
 });
 
 test('invertedGrepOptions', t => {
-  t.is(testExports.invertedGrepOptions('pattern'), '--invert-grep --grep=pattern');
-  t.is(testExports.invertedGrepOptions(), '');
+  t.deepEqual(testExports.invertedGrepOptions('pattern'), ['--invert-grep', '--grep=pattern']);
+  t.deepEqual(testExports.invertedGrepOptions(), []);
+});
+
+test('execToLines error', t => {
+  t.throws(() => testExports.execToLines([]), /No command to exec/);
 });
