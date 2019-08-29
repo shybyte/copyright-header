@@ -1,6 +1,6 @@
 /* Copyright (c) 2018 Marco Stahl */
 
-import { test } from 'ava';
+import test from 'ava';
 import { mapOptional } from './utils';
 
 test('mapOptional', t => {

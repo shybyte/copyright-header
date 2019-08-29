@@ -1,6 +1,6 @@
 /* Copyright (c) 2018 Marco Stahl */
 
-import { ExecutionContext, Macro, test } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import * as child_process from 'child_process';
 import * as fs from 'fs';
 import * as path from 'path';
@@ -157,8 +157,8 @@ test.serial('--forceModificationYear number', t => {
   );
 });
 
-const verifyValidationError: Macro = (
-  t,
+const verifyValidationError = (
+  t: ExecutionContext<unknown>,
   argv: ReadonlyArray<string>,
   expectedErrorMessage: string
 ) => {

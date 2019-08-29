@@ -2,13 +2,13 @@
 
 // tslint:disable:no-expression-statement no-object-mutation
 
-import { Macro, test } from 'ava';
+import test, { ExecutionContext } from 'ava';
 import { testExports } from './copyright-header';
 
 const { collectFiles, useTodayAsYearDefault } = testExports;
 
-const collectFilesTest: Macro = (
-  t,
+const collectFilesTest = (
+  t: ExecutionContext<unknown>,
   include: ReadonlyArray<string>,
   expected: ReadonlyArray<string>
 ) => {

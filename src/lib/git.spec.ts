@@ -2,7 +2,7 @@
 
 // tslint:disable:no-expression-statement no-object-mutation
 
-import { test } from 'ava';
+import test from 'ava';
 import { getFileInfoFromGit, testExports } from './git';
 
 test('getFileInfoFromGit', t => {
