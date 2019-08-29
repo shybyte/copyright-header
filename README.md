@@ -64,21 +64,4 @@ MIT
 
 ## Copyright
 
-Copyright (c) 2018 Marco Stahl
-
-
-![docs/copyright.png](docs/copyright.png)
-![.//docs/copyright.png](./docs/copyright.png)
-![/docs/copyright.png](/docs/copyright.png)
-
-![copyright.png](copyright.png)
-![./copyright.png](./copyright.png)
-![/docs/copyright.png](/copyright.png)
-
-<img src="docs/copyright.png">
-<img src="./docs/copyright.png">
-<img src="/docs/copyright.png">
-
-<img src="copyright.png">
-<img src="./copyright.png">
-<img src="/copyright.png">
+Copyright (c) 2019 Marco Stahl
