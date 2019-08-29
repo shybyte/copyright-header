@@ -61,7 +61,7 @@
     "node": ">=8.9"
   },
   "dependencies": {
-    "commander": "^2.20.0"
+    "commander": "^3.0.0"
   },
   "devDependencies": {
     "@types/node": "^12.7.2",
