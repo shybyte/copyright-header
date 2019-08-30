@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.4.6](https://github.com/shybyte/copyright-header/compare/v0.4.5...v0.4.6) (2019-08-30)
+
+
+### Bug Fixes
+
+* Insert header after hashbang line ([9814924](https://github.com/shybyte/copyright-header/commit/9814924))
+
 ### [0.4.5](https://github.com/shybyte/copyright-header/compare/v0.4.4...v0.4.5) (2019-08-29)
 
 
