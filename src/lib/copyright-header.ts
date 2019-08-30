@@ -23,8 +23,9 @@ const CREATIVE_FILE_EXTENSIONS: ReadonlyArray<string> = [
   'cp'
 ];
 
-const COPYRIGHT_HEADER_REGEXP = /^\/\*[\s\S]*?Copyright[\s\S]*?\*\//;
+const COPYRIGHT_HEADER_REGEXP = /^(\s*)(\/\*[\s\S]*?Copyright[\s\S]*?\*\/)/;
 const FIND_YEARS_REGEXP = /\b20\d{2}\b|present/g;
+const HASHBANG_REGEXP = /^(#\!.*?\n)(.*)$/s;
 
 export interface FileFilter {
   readonly include: ReadonlyArray<string>;
@@ -54,7 +55,7 @@ export function ensureUpdatedCopyrightHeader(opts: ValidatedOptions): Validation
     const fileContent = fs.readFileSync(fileInfo.filename, 'utf8');
     console.log(`Checking ${fileInfo.filename} ...`);
     const newFileContent = updateCopyrightHeader(opts, fileInfo, fileContent);
-    if (newFileContent !== fileContent) {
+    if (!stringsEqual(newFileContent, fileContent)) {
       if (opts.fix) {
         console.log(`Update copyright header in  ${fileInfo.filename}`);
         fs.writeFileSync(fileInfo.filename, newFileContent);
@@ -66,6 +67,11 @@ export function ensureUpdatedCopyrightHeader(opts: ValidatedOptions): Validation
   }
 
   return { unFixedFiles };
+}
+
+// Compare strings ignoring whitespace
+function stringsEqual(a: string, b: string): boolean {
+  return a.replace(/\s+/g, ' ') === b.replace(/\s+/g, ' ');
 }
 
 function useTodayAsYearDefault(fileinfo: GitFileInfo): FileInfo {
@@ -150,7 +156,7 @@ function renderNewHeader(opts: {
 function updateCopyrightHeader(
   opts: ValidatedOptions,
   fileInfo: FileInfo,
-  fileContent: string
+  origFileContent: string
 ): string {
   const renderOpts = {
     fileInfo,
@@ -158,22 +164,38 @@ function updateCopyrightHeader(
     copyrightHolder: opts.copyrightHolder,
     forceModificationYear: opts.forceModificationYear
   };
+  let hashbang = '';
+  let fileContent = origFileContent;
+
+  const hashbangMatch = origFileContent.match(HASHBANG_REGEXP);
+  if (hashbangMatch) {
+    hashbang = hashbangMatch[1];
+    fileContent = hashbangMatch[2];
+  }
 
   const headMatch = fileContent.match(COPYRIGHT_HEADER_REGEXP);
   if (headMatch) {
-    return fileContent.replace(
+    const leadingWhitespace = headMatch[1];
+    fileContent = fileContent.replace(
       COPYRIGHT_HEADER_REGEXP,
-      renderNewHeader({
-        ...renderOpts,
-        currentHeader: headMatch[0]
-      })
+      leadingWhitespace +
+        renderNewHeader({
+          ...renderOpts,
+          currentHeader: headMatch[2]
+        })
     );
   } else {
-    return renderNewHeader(renderOpts) + '\n\n' + fileContent;
+    fileContent = renderNewHeader(renderOpts) + '\n\n' + fileContent;
+    if (hashbang) {
+      hashbang += '\n';
+    }
   }
+
+  return hashbang + fileContent;
 }
 
 export const testExports = {
   collectFiles,
+  updateCopyrightHeader,
   useTodayAsYearDefault
 };
