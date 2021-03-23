@@ -1,4 +1,4 @@
-/* Copyright (c) 2018 Marco Stahl */
+/* Copyright (c) 2018-2021 Marco Stahl */
 
 interface StringMap {
   readonly [key: string]: string;
