@@ -191,7 +191,7 @@ test.serial(
     '--templateId',
     'unknownTemplateId'
   ],
-  'templateId must be one of [minimal, apache]'
+  'templateId must be one of [minimal, apache, gplv3]'
 );
 
 test.serial(
