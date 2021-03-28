@@ -1,4 +1,4 @@
-# Copyright-Header 
+# Copyright-Header
 
 
 [![npm](https://img.shields.io/npm/v/copyright-header.svg)](https://www.npmjs.com/package/copyright-header)
@@ -17,18 +17,18 @@ Validate, add and update copyright headers automatically, based on the git histo
 [![NPM](https://nodei.co/npm/copyright-header.png)](https://www.npmjs.com/package/copyright-header)
 
 Global:
-   
+
     npm i -g copyright-header
-    
+
 As local devDependency:
-   
+
     npm i -D copyright-header
-    
+
 # Usage Hints
 
 * Use it inside of a git repo.
 * It will only affect files tracked by git.
-   
+
 ## Usage Examples (assuming global installation)
 
 Validation:
@@ -43,12 +43,12 @@ Fixing:
 # Options
 
     Usage: copyright-header [options]
-  
+
     Options:
-  
+
       --copyrightHolder <name>        Copyright Holder
       --fix                           adds or updates copyright header to files
-      --templateId <id>               minimal | apache (default: minimal)
+      --templateId <id>               minimal | apache | gplv3 (default: minimal)
       -i, --include <paths>           include regexp file filter (default: )
       -e, --exclude <paths>           exclude regexp file filter (default: )
       --forceModificationYear <year>  number | "present"
