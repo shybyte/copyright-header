@@ -37,6 +37,7 @@ export interface ValidatedOptions extends FileFilter {
   readonly fix: boolean;
   readonly excludeCommits?: string;
   readonly template: string;
+  readonly templateRegex?: RegExp;
   readonly forceModificationYear?: ToYear;
 }
 
@@ -173,11 +174,13 @@ function updateCopyrightHeader(
     fileContent = hashbangMatch[2];
   }
 
-  const headMatch = fileContent.match(COPYRIGHT_HEADER_REGEXP);
+  const regex = opts.templateRegex ? opts.templateRegex : COPYRIGHT_HEADER_REGEXP;
+
+  const headMatch = fileContent.match(regex);
   if (headMatch) {
     const leadingWhitespace = headMatch[1];
     fileContent = fileContent.replace(
-      COPYRIGHT_HEADER_REGEXP,
+      regex,
       leadingWhitespace +
         renderNewHeader({
           ...renderOpts,

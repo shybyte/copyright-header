@@ -8,6 +8,7 @@ import { createSandbox, SinonSandbox, SinonStub } from 'sinon';
 import { ExitCode, runCli } from './cli';
 
 const TEST_DATA_FOLDER = 'test-data';
+const CUSTOM_TEMPLATE_FILE = path.join('docs', 'customTemplate.js');
 
 function revertTestDataFolder(): void {
   child_process.execSync('npm run revertTestData');
@@ -75,6 +76,68 @@ test.serial('--fix', t => {
     t,
     'file-javascript-with-header-start-year-to-present.js',
     '/* Copyright (c) 2014-present CopyrightHolder */\n\n' + "console.log('Test');"
+  );
+});
+
+test.serial('--fix with --templateFile', t => {
+  const exitCode = runCli([
+    'node',
+    'script.js',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--copyrightHolder',
+    'CopyrightHolder',
+    '--fix',
+    '--templateFile',
+    CUSTOM_TEMPLATE_FILE,
+    '--templateRegex',
+    '©'
+  ]);
+
+  t.is(exitCode, ExitCode.OK);
+
+  assertFileContent(
+    t,
+    'file-javascript.js',
+    `/*******************************************************************************
+ * © CopyrightHolder, 2018
+ * All Rights Reserved.
+ ******************************************************************************/
+ 
+console.log('Test');`
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year.js',
+    `/*******************************************************************************
+ * © CopyrightHolder, 2015-2018
+ * All Rights Reserved.
+ ******************************************************************************/
+ 
+console.log('Test');`
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-year.js',
+    `/*******************************************************************************
+ * © CopyrightHolder, 2015-2018
+ * All Rights Reserved.
+ ******************************************************************************/
+ 
+console.log('Test');`
+  );
+
+  assertFileContent(
+    t,
+    'file-javascript-with-header-start-year-to-present.js',
+    `/*******************************************************************************
+ * © CopyrightHolder, 2014-present
+ * All Rights Reserved.
+ ******************************************************************************/
+ 
+console.log('Test');`
   );
 });
 
@@ -192,6 +255,20 @@ test.serial(
     'unknownTemplateId'
   ],
   'templateId must be one of [minimal, apache, gplv3]'
+);
+
+test.serial(
+  '--templateFile validation',
+  verifyValidationError,
+  [
+    '--copyrightHolder',
+    'CopyrightHolder',
+    '--include',
+    TEST_DATA_FOLDER,
+    '--templateFile',
+    'unknownTemplateFile'
+  ],
+  `templateFile 'unknownTemplateFile' does not exist`
 );
 
 test.serial(
